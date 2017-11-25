@@ -3,24 +3,23 @@ package edu.csci5454.pagerank;
 import edu.csci5454.graph.Graph;
 
 public class BasicPageRankImpl {
-	static int V = 5;
-	static double V1 = V;
+	static double V = 5;
 	static double dampingFactor = 1;
 	public static void main(String[] args) {
 		Graph graph = new Graph();
 		
-		double pagerank[] = new double[V+1];
+		double pagerank[] = new double[(int)V+1];
 		
-		graph.createGraph(V);
+		graph.createGraph((int)V);
 		
 		//Initialize page rank of all pages
 		for(int i=1; i<= V; i++){
-			pagerank[i] = (1/V1);
+			pagerank[i] = (1/V);
 		}
 		
 		for(int steps =0; steps < 2; steps++)
 			pagerank = calculatePagerank(graph, pagerank);
-		for(int i=0; i< pagerank.length; i++)
+		for(int i=1; i<= V; i++)
 			System.out.println(pagerank[i]);
 		
 		
