@@ -1,31 +1,46 @@
 package edu.csci5454.pagerank;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.csci5454.graph.Graph;
 
 public class BasicPageRankImpl {
 	static double V = 5;
 	static double dampingFactor = 1;
+	static double convergenceThresold = 0.001;
+	static double maxIterations = 1000;
+	
 	public static void main(String[] args) {
 		Graph graph = new Graph();
-		
-		double pagerank[] = new double[(int)V+1];
-		
+		double oldPagerank[] = new double[(int)V+1];
+		double newPagerank[] = new double[(int)V+1];
+		Map<Integer, Integer> converged = new HashMap<>();
 		graph.createGraph((int)V);
 		
 		//Initialize page rank of all pages
 		for(int i=1; i<= V; i++){
-			pagerank[i] = (1/V);
+			oldPagerank[i] = (1/V);
 		}
-		
-		for(int steps =0; steps < 2; steps++)
-			pagerank = calculatePagerank(graph, pagerank);
-		for(int i=1; i<= V; i++)
-			System.out.println(pagerank[i]);
-		
+		int steps =0;
+		while(steps < maxIterations && converged.size() < V){
+			newPagerank = calculatePagerank(graph, oldPagerank, converged);
+			for(int i=1; i<= V; i++){
+				if(!converged.containsKey(i)){
+					if(Math.abs(oldPagerank[i] - newPagerank[i]) <= convergenceThresold){
+						converged.put(i, i);
+					}
+				}
+				System.out.print(newPagerank[i] + " ");
+			}
+			oldPagerank = newPagerank;
+			System.out.println();
+			steps++;
+		}
 		
 	}
 
-	private static double[] calculatePagerank(Graph graph, double[] pagerank) {
+	private static double[] calculatePagerank(Graph graph, double[] pagerank, Map<Integer, Integer> converged) {
 		double totalIncomingPagerank = 0;
 		double  newPageRank[] = new double[pagerank.length];
 		int incomingnode = 0;
